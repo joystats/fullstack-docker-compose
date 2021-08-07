@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+    shopping_backend:
+        image: joystats/shopping_backend
+        container_name: shopping_backend
+        restart: always
+        ports:
+            - 5002:5002
+        networks: 
+            - shopping_site
+    shopping_mysql:
+        image: mysql
+        container_name: shopping_mysql
+        volumes:
+            - shopping_data:/var/lib/mysql
+        ports:
+            - 3306:3306
+        restart: always
+        environment: 
+            MYSQL_ROOT_PASSWORD: 1234
+        networks: 
+            - shopping_site
+
+    shopping_pma:
+        image: phpmyadmin/phpmyadmin
+        container_name: shopping_pma
+        ports:
+            - 8080:80
+        restart: always
+        depends_on: 
+            - shopping_mysql
+        environment: 
+            PMA_ARBITRARY: 1
+        networks: 
+            - shopping_site
+networks: 
+    shopping_site:
+volumes:
+    shopping_data:
